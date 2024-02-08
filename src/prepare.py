@@ -10,12 +10,10 @@ from torchvision import transforms
 from custom_datasets import OriginalSignsCedarDataset
 from image_processor.image_processor import ImageProcessor
 
-general_params = yaml.safe_load(open("params.yaml"))["general"]
-CEDAR_DATASET_ROOT_FOLDER = general_params["cedar_path"]
 
 
-def prepare_images(transform, output_path):
-    original_dataset = OriginalSignsCedarDataset(CEDAR_DATASET_ROOT_FOLDER, transform)
+def prepare_images(transform, cedar_dataset_root_dir, output_path):
+    original_dataset = OriginalSignsCedarDataset(cedar_dataset_root_dir, transform)
 
     dataloader = DataLoader(original_dataset, batch_size=32, num_workers=2)
     dataframes = []
@@ -23,23 +21,24 @@ def prepare_images(transform, output_path):
         df = pd.DataFrame(zip(np.asarray(i[0]), np.asarray(i[1])), columns=['image', 'class'])
         dataframes.append(df)
 
-    result_path = os.path.join(output_path, "dataset.pkl")
-
     result = pd.concat(dataframes, ignore_index=True)
-    result.to_pickle(result_path)
-    sys.stdout.write(f"Successfully saved by path: {result_path}")
+    result.to_pickle(output_path)
+    sys.stdout.write(f"Successfully saved by path: {output_path}")
 
 
 def main():
     if len(sys.argv) != 3:
         sys.stderr.write("Arguments error. Usage:\n")
-        sys.stderr.write("python prepare.py mode output_path\n")
-        sys.stderr.write("Where: 'mode' one of: 'default', 'thinned'\n")
-        sys.stderr.write("and 'output_path' path to directory \n")
+        sys.stderr.write("python prepare.py cedar_dataset_root_dir output_path\n")
+        sys.stderr.write("Where: 'cedar_dataset_root_dir' path to CEDAR dataset dir\n")
+        sys.stderr.write("and 'output_path' path to result pickle file\n")
         sys.exit(1)
 
-    mode = sys.argv[1]
+    prepare_params = yaml.safe_load(open("params.yaml"))["prepare"]
+
+    cedar_dataset_root_dir = sys.argv[1]
     output_path = sys.argv[2]
+    mode = prepare_params["mode"]
 
     if mode == "default":
         transform = transforms.Compose([
@@ -68,7 +67,7 @@ def main():
         sys.stderr.write("Not recognized mode option\n")
         sys.exit(1)
 
-    prepare_images(transform, output_path)
+    prepare_images(transform, cedar_dataset_root_dir, output_path)
 
 
 if __name__ == '__main__':

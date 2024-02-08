@@ -1,19 +1,18 @@
 schema: '2.0'
 stages:
-  prepare_default:
-    cmd: python .\src\prepare.py default .\data\prepared\default\
+  prepare:
+    cmd: python .\src\prepare.py .\data\CEDAR .\data\prepared\dataset.pkl
     deps:
     - path: .\data\CEDAR\
       hash: md5
       md5: 64943e6c8ef4ae9a2be354bb49d56102.dir
       size: 252256693
       nfiles: 2640
-    - path: .\src\prepare.py
-      hash: md5
-      md5: 54e3f1f0d09218f75e152468f57c41d2
-      size: 2488
+    params:
+      params.yaml:
+        prepare.mode: default
     outs:
-    - path: .\data\prepared\default\dataset.pkl
+    - path: .\data\prepared\dataset.pkl
       hash: md5
       md5: 089a10de69f37da86ae437e8d21b8606
       size: 316861522

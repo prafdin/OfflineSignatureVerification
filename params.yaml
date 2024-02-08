@@ -1,2 +1,5 @@
 general:
   cedar_path: "./data/CEDAR"
+
+prepare:
+  mode: default
