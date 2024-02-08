@@ -1,0 +1,1 @@
+from .hog_method import calc_hog

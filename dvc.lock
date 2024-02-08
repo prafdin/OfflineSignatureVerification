@@ -16,3 +16,18 @@ stages:
       hash: md5
       md5: 089a10de69f37da86ae437e8d21b8606
       size: 316861522
+  featurize:
+    cmd: python .\src\featurize.py .\data\prepared\dataset.pkl .\data\features\dataset.pkl
+    deps:
+    - path: .\data\prepared\dataset.pkl
+      hash: md5
+      md5: 089a10de69f37da86ae437e8d21b8606
+      size: 316861522
+    params:
+      params.yaml:
+        featurization.method: hog
+    outs:
+    - path: .\data\features\dataset.pkl
+      hash: md5
+      md5: 13fa3f76763ee965a1ccb62b989ae936
+      size: 395039132

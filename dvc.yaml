@@ -7,3 +7,11 @@ stages:
     - prepare.mode
     outs:
     - .\data\prepared\dataset.pkl
+  featurize:
+    cmd: python .\src\featurize.py .\data\prepared\dataset.pkl .\data\features\dataset.pkl
+    deps:
+      - .\data\prepared\dataset.pkl
+    params:
+      - featurization.method
+    outs:
+      - .\data\features\dataset.pkl
