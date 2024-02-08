@@ -1,0 +1,8 @@
+stages:
+  prepare_default:
+    cmd: python .\src\prepare.py default .\data\prepared\default\
+    deps:
+    - .\data\CEDAR\
+    - .\src\prepare.py
+    outs:
+    - .\data\prepared\default\dataset.pkl
