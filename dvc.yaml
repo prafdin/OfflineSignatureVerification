@@ -3,6 +3,7 @@ stages:
     cmd: python .\src\prepare.py .\data\CEDAR .\data\prepared\dataset.pkl
     deps:
     - .\data\CEDAR\
+    - .\src\prepare.py
     params:
     - prepare.mode
     outs:
@@ -11,6 +12,7 @@ stages:
     cmd: python .\src\featurize.py .\data\prepared\dataset.pkl .\data\features\dataset.pkl
     deps:
       - .\data\prepared\dataset.pkl
+      - .\src\featurize.py
     params:
       - featurization.method
     outs:

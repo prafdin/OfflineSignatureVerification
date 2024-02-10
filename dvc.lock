@@ -8,6 +8,10 @@ stages:
       md5: 64943e6c8ef4ae9a2be354bb49d56102.dir
       size: 252256693
       nfiles: 2640
+    - path: .\src\prepare.py
+      hash: md5
+      md5: e8daef44ed5312ae1cd16b6db38394fd
+      size: 2513
     params:
       params.yaml:
         prepare.mode: default
@@ -23,11 +27,15 @@ stages:
       hash: md5
       md5: 089a10de69f37da86ae437e8d21b8606
       size: 316861522
+    - path: .\src\featurize.py
+      hash: md5
+      md5: e4e5203d68a6f2ece02c5d744e85c7f7
+      size: 1636
     params:
       params.yaml:
         featurization.method: hog
     outs:
     - path: .\data\features\dataset.pkl
       hash: md5
-      md5: 13fa3f76763ee965a1ccb62b989ae936
-      size: 395039132
+      md5: 7429820448e75632978a05b94b0c09ff
+      size: 78195624
