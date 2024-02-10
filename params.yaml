@@ -6,3 +6,6 @@ prepare:
 
 featurization:
   method: hog
+
+split:
+  salt: 42

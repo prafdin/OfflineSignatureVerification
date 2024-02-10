@@ -17,3 +17,13 @@ stages:
       - featurization.method
     outs:
       - .\data\features\dataset.pkl
+  split:
+    cmd: python .\src\split.py .\data\features\dataset.pkl .\data\splitted\train.pt .\data\splitted\test.pt
+    deps:
+      - .\data\features\dataset.pkl
+      - .\src\split.py
+    params:
+      - split.salt
+    outs:
+      - .\data\splitted\train.pt
+      - .\data\splitted\test.pt

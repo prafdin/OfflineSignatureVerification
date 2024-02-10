@@ -39,3 +39,27 @@ stages:
       hash: md5
       md5: 7429820448e75632978a05b94b0c09ff
       size: 78195624
+  split:
+    cmd: python .\src\split.py .\data\features\dataset.pkl .\data\splitted\train.pt
+      .\data\splitted\test.pt
+    deps:
+    - path: .\data\features\dataset.pkl
+      hash: md5
+      md5: 7429820448e75632978a05b94b0c09ff
+      size: 78195624
+    - path: .\src\split.py
+      hash: md5
+      md5: f46d7376bbfe99c1169cfb8aac3d1a37
+      size: 1659
+    params:
+      params.yaml:
+        split.salt: 42
+    outs:
+    - path: .\data\splitted\test.pt
+      hash: md5
+      md5: bd30cc474d979548202f79b53dfe46b5
+      size: 82602644
+    - path: .\data\splitted\train.pt
+      hash: md5
+      md5: 32ea091fd5a5e974f22211e65e95a03d
+      size: 82601176
