@@ -12,6 +12,6 @@ class PreparedDataset(Dataset):
 
     def __getitem__(self, idx):
         if self.transform is not None:
-            return self.transform(self.df['image'][idx]), self.df['image'][idx]
-        else :
-            return self.df['image'][idx], self.df['image'][idx]
+            return self.transform(self.df['image'][idx]), self.df['class'][idx]
+        else:
+            return self.df['image'][idx], self.df['class'][idx]
