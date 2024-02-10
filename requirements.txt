@@ -8,3 +8,4 @@ PyYAML==6.0.1
 pillow==10.2.0
 dvc
 scikit-learn==1.4.0
+dvclive==3.41.1
