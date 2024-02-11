@@ -1,5 +1,4 @@
 metrics:
-- .\eval\metrics.json
 - eval/metrics.json
 stages:
   prepare:
