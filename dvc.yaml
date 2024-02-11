@@ -1,5 +1,6 @@
 metrics:
-  - .\eval\metrics.json
+- .\eval\metrics.json
+- eval/metrics.json
 stages:
   prepare:
     cmd: python .\src\prepare.py .\data\CEDAR .\data\prepared\dataset.pkl
@@ -13,34 +14,38 @@ stages:
   featurize:
     cmd: python .\src\featurize.py .\data\prepared\dataset.pkl .\data\features\dataset.pkl
     deps:
-      - .\data\prepared\dataset.pkl
-      - .\src\featurize.py
+    - .\data\prepared\dataset.pkl
+    - .\src\featurize.py
     params:
-      - featurization.method
+    - featurization.method
     outs:
-      - .\data\features\dataset.pkl
+    - .\data\features\dataset.pkl
   split:
-    cmd: python .\src\split.py .\data\features\dataset.pkl .\data\splitted\train.pt .\data\splitted\test.pt
+    cmd: python .\src\split.py .\data\features\dataset.pkl .\data\splitted\train.pt
+      .\data\splitted\test.pt
     deps:
-      - .\data\features\dataset.pkl
-      - .\src\split.py
+    - .\data\features\dataset.pkl
+    - .\src\split.py
     params:
-      - split.salt
+    - split.salt
     outs:
-      - .\data\splitted\train.pt
-      - .\data\splitted\test.pt
+    - .\data\splitted\train.pt
+    - .\data\splitted\test.pt
   train:
-      cmd: python .\src\train.py .\data\splitted\train.pt .\data\model\model.pkl
-      deps:
-        - .\data\splitted\train.pt
-        - .\src\train.py
-      outs:
-        - .\data\model\model.pkl
+    cmd: python .\src\train.py .\data\splitted\train.pt .\data\model\model.pkl
+    deps:
+    - .\data\splitted\train.pt
+    - .\src\train.py
+    outs:
+    - .\data\model\model.pkl
   eval:
     cmd: python .\src\eval.py .\data\splitted\test.pt .\data\model\model.pkl
     deps:
-      - .\data\splitted\train.pt
-      - .\data\model\model.pkl
-      - .\src\train.py
+    - .\data\splitted\train.pt
+    - .\data\model\model.pkl
+    - .\src\eval.py
     outs:
-      - .\eval
+    - .\eval
+plots:
+- eval/plots/metrics:
+    x: step

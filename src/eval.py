@@ -9,14 +9,8 @@ from dvclive import Live
 
 def eval(model, X, y, split, live):
     predictions_by_class = model.predict_proba(X)
-
-    # Use dvclive to log a few simple metrics...
     avg_prec = metrics.average_precision_score(y, predictions_by_class)
-    roc_auc = metrics.roc_auc_score(y, predictions_by_class, multi_class='ovr')
-    if not live.summary:
-        live.summary = {"avg_prec": {}, "roc_auc": {}}
-    live.summary["avg_prec"][split] = avg_prec
-    live.summary["roc_auc"][split] = roc_auc
+    live.log_metric("avg_prec", avg_prec)
 
 
 def main():
@@ -47,7 +41,7 @@ def main():
     X = np.asarray(X)
     y = np.asarray(y)
 
-    with Live("eval", dvcyaml=False) as live:
+    with Live("eval") as live:
         eval(model, X, y, "test", live)
 
 
