@@ -1,5 +1,5 @@
 metrics:
-  - test/metrics.json
+  - eval/metrics.json
 
 stages:
   prepare:
