@@ -8,7 +8,7 @@ featurization:
   method: hog
 
 split:
-  salt: 66
+  salt: 99
 
 train:
 
