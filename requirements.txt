@@ -9,3 +9,4 @@ pillow==10.2.0
 dvc
 scikit-learn==1.4.0
 dvclive==3.41.1
+dvc-gdrive==3.0.1
