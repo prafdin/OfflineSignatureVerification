@@ -1,3 +1,5 @@
+metrics:
+  - .\eval\metrics.json
 stages:
   prepare:
     cmd: python .\src\prepare.py .\data\CEDAR .\data\prepared\dataset.pkl
