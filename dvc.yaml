@@ -40,5 +40,5 @@ stages:
       - .\data\splitted\train.pt
       - .\data\model\model.pkl
       - .\src\train.py
-    metrics:
-      - .\eval\metrics.json
+    outs:
+      - .\eval
