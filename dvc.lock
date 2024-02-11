@@ -95,8 +95,7 @@ stages:
       md5: 63224492dd8c6ef3e55855eaf382e59d
       size: 1136
     outs:
-    - path: .\eval
+    - path: .\eval\metrics.json
       hash: md5
-      md5: 3e35cf5562495497f8f44b9922070379.dir
+      md5: 263a4148595b77a232d126cceeaa18f6
       size: 130
-      nfiles: 1
