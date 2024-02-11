@@ -1,5 +1,5 @@
 general:
-  cedar_path: "./data/CEDAR"
+  cedar_path: ./data/CEDAR
 
 prepare:
   mode: default
@@ -8,7 +8,7 @@ featurization:
   method: hog
 
 split:
-  salt: 42
+  salt: 66
 
 train:
 

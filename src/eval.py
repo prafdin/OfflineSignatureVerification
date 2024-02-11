@@ -41,7 +41,7 @@ def main():
     X = np.asarray(X)
     y = np.asarray(y)
 
-    with Live("eval") as live:
+    with Live("eval", save_dvc_exp=True) as live:
         eval(model, X, y, "test", live)
 
 
