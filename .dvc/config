@@ -2,3 +2,5 @@
     remote = gremote
 ['remote "gremote"']
     url = gdrive://1xxOg713tFL5CBHS4vVrkzU5YcaUqYrjw
+    gdrive_client_id = client-id
+    gdrive_client_secret = client-secret
