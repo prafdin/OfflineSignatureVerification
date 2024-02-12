@@ -4,6 +4,7 @@ import sys
 import numpy as np
 import pandas as pd
 import yaml
+from skimage.morphology import skeletonize
 from torch.utils.data import DataLoader
 from torchvision import transforms
 
@@ -39,6 +40,7 @@ def main():
     cedar_dataset_root_dir = sys.argv[1]
     output_path = sys.argv[2]
     mode = prepare_params["mode"]
+    fixed_size = list(map(int, prepare_params["fixed_size"].split(",")))
 
     if mode == "default":
         transform = transforms.Compose([
@@ -48,7 +50,7 @@ def main():
             ImageProcessor.dilate_img,
             ImageProcessor.erode_img,
             ImageProcessor.thin_img,
-            transforms.Resize((400, 600)),  # TODO: Need to customize target size
+            transforms.Resize(fixed_size),
             np.array
         ])
     elif mode == "thinned":
@@ -59,8 +61,8 @@ def main():
             ImageProcessor.dilate_img,
             ImageProcessor.erode_img,
             ImageProcessor.thin_img,
-            transforms.Resize((400, 600)),  # TODO: Need to customize target size
-            #  TODO: Add skeletonization in pipeline image
+            transforms.Resize(fixed_size),
+            skeletonize,
             np.array
         ])
     else:

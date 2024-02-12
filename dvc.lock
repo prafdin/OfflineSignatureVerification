@@ -10,10 +10,11 @@ stages:
       nfiles: 2640
     - path: .\src\prepare.py
       hash: md5
-      md5: e8daef44ed5312ae1cd16b6db38394fd
-      size: 2513
+      md5: 3d6ab7fa4237c5716b4adc20c257d1a5
+      size: 2519
     params:
       params.yaml:
+        prepare.fixed_size: 400,600
         prepare.mode: default
     outs:
     - path: .\data\prepared\dataset.pkl

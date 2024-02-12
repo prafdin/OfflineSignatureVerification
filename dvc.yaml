@@ -8,6 +8,7 @@ stages:
     - .\src\prepare.py
     params:
     - prepare.mode
+    - prepare.fixed_size
     outs:
     - .\data\prepared\dataset.pkl
   featurize:

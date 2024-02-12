@@ -3,6 +3,7 @@ general:
 
 prepare:
   mode: default
+  fixed_size: 400,600 # Final size for all signatures (h,w)
 
 featurization:
   method: hog
