@@ -21,6 +21,7 @@ def main():
         sys.exit(1)
 
     split_params = yaml.safe_load(open("params.yaml"))["split"]
+    train_samples_per_user = int(split_params["train_samples_per_user"])
 
     feature_dataset_path = sys.argv[1]
     train_output_path = sys.argv[2]
@@ -31,7 +32,9 @@ def main():
     X = range(len(features_dataset))
     y = features_dataset.targets()
 
-    X_train_ids, X_test_ids, y_train, y_test = train_test_split(X, y, test_size=0.7, random_state=split_params["salt"], stratify=y)
+    train_size = train_samples_per_user * len(set(y)) / len(y)
+
+    X_train_ids, X_test_ids, y_train, y_test = train_test_split(X, y, train_size=train_size, random_state=split_params["salt"], stratify=y)
 
     train_dataset = Subset(features_dataset, X_train_ids)
     test_dataset = Subset(features_dataset, X_test_ids)

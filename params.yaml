@@ -2,17 +2,18 @@ general:
   cedar_path: ./data/CEDAR
 
 prepare:
-  mode: thinned
+  mode: default
   fixed_size: 400,600 # Final size for all signatures (h,w)
 
 featurization:
   method: hog
 
 split:
+  train_samples_per_user: 6
   salt: 44
 
 eval:
   use_cls: knn
   knn:
-    k: 3
+    k: 5
     metric: BHATTACHARYYA # EUCLIDEAN CITYBLOCK MANHATTAN BHATTACHARYYA CORRELATION KV_DIVERGENCE
