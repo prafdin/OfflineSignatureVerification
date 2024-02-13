@@ -1,5 +1,3 @@
-metrics:
-- eval/metrics.json
 stages:
   prepare:
     cmd: python src\prepare.py data\CEDAR data\prepared\dataset.pkl
@@ -30,21 +28,19 @@ stages:
     outs:
     - data\splitted\train.pt
     - data\splitted\test.pt
-  train:
-    cmd: python src\train.py data\splitted\train.pt data\model\model.pkl
-    deps:
-    - data\splitted\train.pt
-    - src\train.py
-    outs:
-    - data\model\model.pkl
   eval:
-    cmd: python src\eval.py data\splitted\test.pt data\model\model.pkl
+    cmd: python src\eval.py data\splitted\train.pt data\splitted\test.pt
     deps:
     - data\splitted\train.pt
-    - data\model\model.pkl
+    - data\splitted\test.pt
     - src\eval.py
+    params:
+    - eval.use_cls
+    - eval.knn
     outs:
     - eval
+metrics:
+- eval/metrics.json
 plots:
 - eval/plots/metrics:
     x: step

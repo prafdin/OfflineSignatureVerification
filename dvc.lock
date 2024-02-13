@@ -10,23 +10,23 @@ stages:
       nfiles: 2640
     - path: src\prepare.py
       hash: md5
-      md5: 3d6ab7fa4237c5716b4adc20c257d1a5
-      size: 2519
+      md5: db5e13e3a09dcd285a84056feaee2e79
+      size: 2455
     params:
       params.yaml:
         prepare.fixed_size: 400,600
-        prepare.mode: default
+        prepare.mode: thinned
     outs:
     - path: data\prepared\dataset.pkl
       hash: md5
-      md5: 089a10de69f37da86ae437e8d21b8606
+      md5: 11ae776d33e80d238cc63fb35e028518
       size: 316861522
   featurize:
     cmd: python src\featurize.py data\prepared\dataset.pkl data\features\dataset.pkl
     deps:
     - path: data\prepared\dataset.pkl
       hash: md5
-      md5: 089a10de69f37da86ae437e8d21b8606
+      md5: 11ae776d33e80d238cc63fb35e028518
       size: 316861522
     - path: src\featurize.py
       hash: md5
@@ -38,14 +38,14 @@ stages:
     outs:
     - path: data\features\dataset.pkl
       hash: md5
-      md5: 7429820448e75632978a05b94b0c09ff
+      md5: 3cddf0f0198083f476a2292a4740f942
       size: 78195624
   split:
     cmd: python src\split.py data\features\dataset.pkl data\splitted\train.pt data\splitted\test.pt
     deps:
     - path: data\features\dataset.pkl
       hash: md5
-      md5: 7429820448e75632978a05b94b0c09ff
+      md5: 3cddf0f0198083f476a2292a4740f942
       size: 78195624
     - path: src\split.py
       hash: md5
@@ -57,46 +57,36 @@ stages:
     outs:
     - path: data\splitted\test.pt
       hash: md5
-      md5: 367b706358ccdadac5e7f0987a9b3788
-      size: 82602644
+      md5: 40b7aa575c83f5f9a977ab966bf06a11
+      size: 80347412
     - path: data\splitted\train.pt
       hash: md5
-      md5: cd9f2d4a324d3e1a20606ba16b907269
-      size: 82601176
-  train:
-    cmd: python src\train.py data\splitted\train.pt data\model\model.pkl
-    deps:
-    - path: data\splitted\train.pt
-      hash: md5
-      md5: cd9f2d4a324d3e1a20606ba16b907269
-      size: 82601176
-    - path: src\train.py
-      hash: md5
-      md5: 63224492dd8c6ef3e55855eaf382e59d
-      size: 1136
-    outs:
-    - path: data\model\model.pkl
-      hash: md5
-      md5: 812007d466208260696217c736def8ca
-      size: 23447473
+      md5: 18c275beb2be0985a093bfc7a5bdd89a
+      size: 80345944
   eval:
-    cmd: python src\eval.py data\splitted\test.pt data\model\model.pkl
+    cmd: python src\eval.py data\splitted\train.pt data\splitted\test.pt
     deps:
-    - path: data\model\model.pkl
+    - path: data\splitted\test.pt
       hash: md5
-      md5: 812007d466208260696217c736def8ca
-      size: 23447473
+      md5: 40b7aa575c83f5f9a977ab966bf06a11
+      size: 80347412
     - path: data\splitted\train.pt
       hash: md5
-      md5: cd9f2d4a324d3e1a20606ba16b907269
-      size: 82601176
+      md5: 18c275beb2be0985a093bfc7a5bdd89a
+      size: 80345944
     - path: src\eval.py
       hash: md5
-      md5: c723ea7b783bd36e2e84ec873657dd6a
-      size: 1293
+      md5: 5e1bf4725b730b2d38aee8294c6e4033
+      size: 2795
+    params:
+      params.yaml:
+        eval.knn:
+          k: 3
+          metric: BHATTACHARYYA
+        eval.use_cls: knn
     outs:
     - path: eval
       hash: md5
-      md5: e8e505f0bebad388390ea2087f1b3e9d.dir
+      md5: 4e4231ed35ae12df9218458733ddb8f7.dir
       size: 79
       nfiles: 2

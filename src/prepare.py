@@ -49,7 +49,6 @@ def main():
             ImageProcessor.morph_open,
             ImageProcessor.dilate_img,
             ImageProcessor.erode_img,
-            ImageProcessor.thin_img,
             transforms.Resize(fixed_size),
             np.array
         ])
@@ -60,9 +59,8 @@ def main():
             ImageProcessor.morph_open,
             ImageProcessor.dilate_img,
             ImageProcessor.erode_img,
-            ImageProcessor.thin_img,
             transforms.Resize(fixed_size),
-            skeletonize,
+            ImageProcessor.thin_img,
             np.array
         ])
     else:
