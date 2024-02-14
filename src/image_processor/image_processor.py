@@ -72,3 +72,33 @@ class ImageProcessor:
     def contrast_img(image: Image) -> Image:
         contrast_factor = 20
         return ImageEnhance.Contrast(image).enhance(contrast_factor)
+
+    @staticmethod
+    def crop_roi(image: Image) -> Image:
+        orig_image = image.copy()
+        image = ImageProcessor.img_to_gray(image)
+        image = ImageProcessor.img_to_bin(image)
+
+        image = np.array(image.convert('L'))
+
+        kernel = np.ones((15, 15), np.uint8)
+        image = cv.morphologyEx(image, cv.MORPH_CLOSE, kernel)
+        image = cv.morphologyEx(image, cv.MORPH_DILATE, kernel)
+
+        cnts = cv.findContours(image, cv.RETR_LIST,
+                                cv.CHAIN_APPROX_SIMPLE)[-2]
+
+        nh, nw = image.shape[:2]
+        min_x, min_y, max_x, max_y = 999999999, 999999999, -1, -1
+        for cnt in cnts:
+            x, y, w, h = cv.boundingRect(cnt)
+            if h >= 0.1 * nh:
+                if x < min_x:
+                    min_x = x
+                if y < min_y:
+                    min_y = y
+                if x + w > max_x:
+                    max_x = x + w
+                if y + h > max_y:
+                    max_y = y + h
+        return orig_image.crop((min_x, min_y, max_x, max_y))
