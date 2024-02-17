@@ -44,6 +44,7 @@ def main():
 
     if mode == "default":
         transform = transforms.Compose([
+            ImageProcessor.fix_slope,
             ImageProcessor.crop_roi,
             ImageProcessor.img_to_gray,
             ImageProcessor.img_to_bin,
@@ -55,6 +56,7 @@ def main():
         ])
     elif mode == "thinned":
         transform = transforms.Compose([
+            ImageProcessor.fix_slope,
             ImageProcessor.crop_roi,
             ImageProcessor.img_to_gray,
             ImageProcessor.img_to_bin,

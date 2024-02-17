@@ -9,7 +9,7 @@ featurization:
   method: hog
 
 split:
-  train_samples_per_user: 18
+  train_samples_per_user: 12
   salt: 44
 
 eval:
