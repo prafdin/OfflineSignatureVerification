@@ -2,14 +2,14 @@ general:
   cedar_path: ./data/CEDAR
 
 prepare:
-  mode: default
+  mode: thinned
   fixed_size: 600,800 # Final size for all signatures (h,w)
 
 featurization:
   method: hog
 
 split:
-  train_samples_per_user: 12
+  train_samples_per_user: 18
   salt: 44
 
 eval:
