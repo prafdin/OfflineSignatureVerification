@@ -9,6 +9,8 @@ from torchvision import transforms
 
 from custom_datasets import PreparedDataset
 from feature_extraction import calc_hog
+from feature_extraction.lbp_method import calc_lbp
+
 
 def featurize(transform, dataset_path, output_path):
     prepared_dataset = PreparedDataset(dataset_path, transform)
@@ -41,7 +43,9 @@ def main():
             calc_hog
         ])
     elif method == "lbp":
-        pass  # TODO: Add lbp method
+        transform = transforms.Compose([
+            calc_lbp
+        ])
     else:
         sys.stderr.write("Not recognized method\n")
         sys.exit(1)

@@ -1,39 +1,39 @@
 stages:
   prepare:
-    cmd: python src\prepare.py data\CEDAR data\prepared\dataset.pkl
+    cmd: python src/prepare.py data/CEDAR data/prepared/dataset.pkl
     deps:
-    - data\CEDAR\
-    - src\prepare.py
+    - data/CEDAR/
+    - src/prepare.py
     params:
     - prepare.mode
     - prepare.fixed_size
     outs:
-    - data\prepared\dataset.pkl
+    - data/prepared/dataset.pkl
   featurize:
-    cmd: python src\featurize.py data\prepared\dataset.pkl data\features\dataset.pkl
+    cmd: python src/featurize.py data/prepared/dataset.pkl data/features/dataset.pkl
     deps:
-    - data\prepared\dataset.pkl
-    - src\featurize.py
+    - data/prepared/dataset.pkl
+    - src/featurize.py
     params:
     - featurization.method
     outs:
-    - data\features\dataset.pkl
+    - data/features/dataset.pkl
   split:
-    cmd: python src\split.py data\features\dataset.pkl data\splitted\train.pt data\splitted\test.pt
+    cmd: python src/split.py data/features/dataset.pkl data/splitted/train.pt data/splitted/test.pt
     deps:
-    - data\features\dataset.pkl
-    - src\split.py
+    - data/features/dataset.pkl
+    - src/split.py
     params:
     - split.salt
     outs:
-    - data\splitted\train.pt
-    - data\splitted\test.pt
+    - data/splitted/train.pt
+    - data/splitted/test.pt
   eval:
-    cmd: python src\eval.py data\splitted\train.pt data\splitted\test.pt
+    cmd: python src/eval.py data/splitted/train.pt data/splitted/test.pt
     deps:
-    - data\splitted\train.pt
-    - data\splitted\test.pt
-    - src\eval.py
+    - data/splitted/train.pt
+    - data/splitted/test.pt
+    - src/eval.py
     params:
     - eval.use_cls
     - eval.knn
