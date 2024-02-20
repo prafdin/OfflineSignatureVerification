@@ -2,11 +2,11 @@ general:
   cedar_path: ./data/CEDAR
 
 prepare:
-  mode: thinned
+  mode: thinned # default thinned
   fixed_size: 600,800 # Final size for all signatures (h,w)
 
 featurization:
-  method: hog
+  method: lbp # hog lbp
 
 split:
   train_samples_per_user: 18

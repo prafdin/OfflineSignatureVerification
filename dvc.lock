@@ -30,23 +30,23 @@ stages:
       size: 633661522
     - path: src/featurize.py
       hash: md5
-      md5: e4e5203d68a6f2ece02c5d744e85c7f7
-      size: 1636
+      md5: d0721cf85f11bdb7104770edb6bca62f
+      size: 1724
     params:
       params.yaml:
-        featurization.method: hog
+        featurization.method: lbp
     outs:
     - path: data/features/dataset.pkl
       hash: md5
-      md5: 339db7e78bcfcf897e86cda4dec80246
-      size: 156345564
+      md5: 35d44b67dad64fd42cced1cfcbed49bc
+      size: 149982
   split:
     cmd: python src/split.py data/features/dataset.pkl data/splitted/train.pt data/splitted/test.pt
     deps:
     - path: data/features/dataset.pkl
       hash: md5
-      md5: 339db7e78bcfcf897e86cda4dec80246
-      size: 156345564
+      md5: 35d44b67dad64fd42cced1cfcbed49bc
+      size: 149982
     - path: src/split.py
       hash: md5
       md5: 31d9ac88352258ad88a28e6590562489
@@ -57,23 +57,23 @@ stages:
     outs:
     - path: data/splitted/test.pt
       hash: md5
-      md5: 28a27882743533306e01faed03d7b19a
-      size: 173957268
+      md5: ece3985651897ff5f19b54560d1b2967
+      size: 244372
     - path: data/splitted/train.pt
       hash: md5
-      md5: 3b0f498f654624a9cc4b1913226977e1
-      size: 173959064
+      md5: d263653cd55ef5d1f992dd1e4a1922fb
+      size: 246232
   eval:
     cmd: python src/eval.py data/splitted/train.pt data/splitted/test.pt
     deps:
     - path: data/splitted/test.pt
       hash: md5
-      md5: 28a27882743533306e01faed03d7b19a
-      size: 173957268
+      md5: ece3985651897ff5f19b54560d1b2967
+      size: 244372
     - path: data/splitted/train.pt
       hash: md5
-      md5: 3b0f498f654624a9cc4b1913226977e1
-      size: 173959064
+      md5: d263653cd55ef5d1f992dd1e4a1922fb
+      size: 246232
     - path: src/eval.py
       hash: md5
       md5: 5e1bf4725b730b2d38aee8294c6e4033
@@ -87,6 +87,6 @@ stages:
     outs:
     - path: eval
       hash: md5
-      md5: 41d30dbb56445a4b9f4efbde2e924e8f.dir
+      md5: 0b1ef262afc9e94368311908e3e4d8fb.dir
       size: 79
       nfiles: 2
