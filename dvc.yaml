@@ -17,6 +17,7 @@ stages:
     params:
     - featurization.method
     - featurization.patterns_hist
+    - featurization.polinom_coefficients_hist
     outs:
     - data/features/dataset.pkl
   split:

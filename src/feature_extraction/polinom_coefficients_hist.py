@@ -1,4 +1,9 @@
 import numpy as np
+from sklearn.linear_model import LinearRegression
+
+_configs = {
+    "w_size": 3
+}
 
 def get_shifted_window(data, n_c_x, n_c_y, w_size):
     shifted_window = np.zeros((w_size, w_size))
@@ -18,22 +23,26 @@ def get_shifted_window(data, n_c_x, n_c_y, w_size):
             shifted_window[i][j] = data[offset_i][offset_j]
     return shifted_window
 
-class PatternsHist:
-    def __init__(self, config):
-        self.config = config
+class PolinomCoefficientsHist:
+    def __init__(self, configs):
+        self.configs = configs
 
     def __call__(self, *args, **kwargs):
         img = args[0]
-        w_size = self.config["w_size"]
+        w_size = self.configs["w_size"]
         if np.max(img) == 255:
             img = img / 255
         indices = np.argwhere(np.apply_along_axis(lambda x: x == 1, axis=0, arr=img))
         window_array = [get_shifted_window(img, *coords, w_size) for coords in indices]
+        f_vector = []
+        for some_window in window_array:
+            indices = np.argwhere(np.apply_along_axis(lambda x: x == 1, axis=0, arr=some_window))
+            X, y = np.split(indices, 2, axis=1)
+            reg = LinearRegression(fit_intercept=False).fit(X, y)
+            f_vector.append(reg.coef_)
 
-        feature_v = [w.ravel().astype(int) for w in window_array]
-        feature_v = [int("".join(map(str, v)), 2) for v in feature_v]
-
-        bins = 2 ** (w_size * w_size)
-        feature_v, bins = np.histogram(feature_v, density=True, bins=bins, range=(0, bins))
-
+        feature_v, bins = np.histogram(f_vector, density=True)
         return feature_v
+
+
+

@@ -30,25 +30,27 @@ stages:
       size: 158461522
     - path: src/featurize.py
       hash: md5
-      md5: 481a30a83756e3ded9eb3d8c47948e12
-      size: 2077
+      md5: 56357000298062183ffbe794f389c289
+      size: 2258
     params:
       params.yaml:
-        featurization.method: patterns_hist
+        featurization.method: polinom_coefficients_hist
         featurization.patterns_hist:
-          w_size: 3
+          w_size: 6
+        featurization.polinom_coefficients_hist:
+          w_size: 12
     outs:
     - path: data/features/dataset.pkl
       hash: md5
-      md5: a1b2d5047d0a35e2ff85b3e79e3b5b99
-      size: 5453142
+      md5: 1cc8b2941d04c530fe1f934614771c69
+      size: 149982
   split:
     cmd: python src/split.py data/features/dataset.pkl data/splitted/train.pt data/splitted/test.pt
     deps:
     - path: data/features/dataset.pkl
       hash: md5
-      md5: a1b2d5047d0a35e2ff85b3e79e3b5b99
-      size: 5453142
+      md5: 1cc8b2941d04c530fe1f934614771c69
+      size: 149982
     - path: src/split.py
       hash: md5
       md5: 31d9ac88352258ad88a28e6590562489
@@ -59,23 +61,23 @@ stages:
     outs:
     - path: data/splitted/test.pt
       hash: md5
-      md5: ff539693c30dbe46af617638eb335620
-      size: 5878100
+      md5: 1cc1adca849f61c9378a80d5fa9fd7b9
+      size: 265428
     - path: data/splitted/train.pt
       hash: md5
-      md5: 3fabbdbf4cfbabe7f632dd07e56f43df
-      size: 5879960
+      md5: de95cc5989489620ecc4cd321e780ce6
+      size: 267288
   eval:
     cmd: python src/eval.py data/splitted/train.pt data/splitted/test.pt
     deps:
     - path: data/splitted/test.pt
       hash: md5
-      md5: ff539693c30dbe46af617638eb335620
-      size: 5878100
+      md5: 1cc1adca849f61c9378a80d5fa9fd7b9
+      size: 265428
     - path: data/splitted/train.pt
       hash: md5
-      md5: 3fabbdbf4cfbabe7f632dd07e56f43df
-      size: 5879960
+      md5: de95cc5989489620ecc4cd321e780ce6
+      size: 267288
     - path: src/eval.py
       hash: md5
       md5: 5e1bf4725b730b2d38aee8294c6e4033
@@ -89,6 +91,6 @@ stages:
     outs:
     - path: eval
       hash: md5
-      md5: ae3ebf8d9583ecdaf9cc2a01209ebe02.dir
-      size: 79
+      md5: 2d426e146f58579147445f25cfd002aa.dir
+      size: 81
       nfiles: 2
