@@ -1,5 +1,9 @@
 import numpy as np
 
+_configs = {
+    "w_size": 3
+}
+
 def get_shifted_window(data, n_c_x, n_c_y, w_size):
     shifted_window = np.zeros((w_size, w_size))
 
@@ -19,7 +23,7 @@ def get_shifted_window(data, n_c_x, n_c_y, w_size):
     return shifted_window
 
 def calc_patterns_hist(img):
-    w_size = 3
+    w_size = _configs["w_size"]
     if np.max(img) == 255:
         img = img / 255
     indices = np.argwhere(np.apply_along_axis(lambda x: x == 1, axis=0, arr=img))
@@ -32,3 +36,6 @@ def calc_patterns_hist(img):
     feature_v, bins = np.histogram(feature_v, density=True, bins=bins, range=(0, bins))
 
     return feature_v
+
+def set_config_patterns_hist_method(key, value):
+    _configs[key] = value

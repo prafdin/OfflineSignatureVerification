@@ -16,6 +16,7 @@ stages:
     - src/featurize.py
     params:
     - featurization.method
+    - featurization.patterns_hist
     outs:
     - data/features/dataset.pkl
   split:

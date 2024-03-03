@@ -10,7 +10,7 @@ from torchvision import transforms
 from custom_datasets import PreparedDataset
 from feature_extraction import calc_hog
 from feature_extraction import calc_lbp
-from feature_extraction import calc_patterns_hist
+from feature_extraction import calc_patterns_hist, set_config_patterns_hist_method
 
 
 def featurize(transform, dataset_path, output_path):
@@ -48,6 +48,7 @@ def main():
             calc_lbp
         ])
     elif method == "patterns_hist":
+        set_config_patterns_hist_method("w_size", featurization_params["patterns_hist"]["w_size"])
         transform = transforms.Compose([
             calc_patterns_hist
         ])

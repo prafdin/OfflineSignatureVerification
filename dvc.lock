@@ -14,38 +14,40 @@ stages:
       size: 2609
     params:
       params.yaml:
-        prepare.fixed_size: 600,800
+        prepare.fixed_size: 300,400
         prepare.mode: thinned
     outs:
     - path: data/prepared/dataset.pkl
       hash: md5
-      md5: d400458b24f6571acb427d37b7a81e2a
-      size: 633661522
+      md5: 45ae7eae69ad5b3ed871d79fea80a700
+      size: 158461522
   featurize:
     cmd: python src/featurize.py data/prepared/dataset.pkl data/features/dataset.pkl
     deps:
     - path: data/prepared/dataset.pkl
       hash: md5
-      md5: d400458b24f6571acb427d37b7a81e2a
-      size: 633661522
+      md5: 45ae7eae69ad5b3ed871d79fea80a700
+      size: 158461522
     - path: src/featurize.py
       hash: md5
-      md5: 942c014edf5a2dc06cdd2e1b71b0aaa7
-      size: 1944
+      md5: 481a30a83756e3ded9eb3d8c47948e12
+      size: 2077
     params:
       params.yaml:
         featurization.method: patterns_hist
+        featurization.patterns_hist:
+          w_size: 3
     outs:
     - path: data/features/dataset.pkl
       hash: md5
-      md5: 9f722ff6393275fff3c623f9a48bfc59
+      md5: a1b2d5047d0a35e2ff85b3e79e3b5b99
       size: 5453142
   split:
     cmd: python src/split.py data/features/dataset.pkl data/splitted/train.pt data/splitted/test.pt
     deps:
     - path: data/features/dataset.pkl
       hash: md5
-      md5: 9f722ff6393275fff3c623f9a48bfc59
+      md5: a1b2d5047d0a35e2ff85b3e79e3b5b99
       size: 5453142
     - path: src/split.py
       hash: md5
@@ -57,23 +59,23 @@ stages:
     outs:
     - path: data/splitted/test.pt
       hash: md5
-      md5: 5aa20c601868e48f58999956b61ed2a1
-      size: 6184084
+      md5: ff539693c30dbe46af617638eb335620
+      size: 5878100
     - path: data/splitted/train.pt
       hash: md5
-      md5: 53ba685e8798f04119def44a28aa9a38
-      size: 6185944
+      md5: 3fabbdbf4cfbabe7f632dd07e56f43df
+      size: 5879960
   eval:
     cmd: python src/eval.py data/splitted/train.pt data/splitted/test.pt
     deps:
     - path: data/splitted/test.pt
       hash: md5
-      md5: 5aa20c601868e48f58999956b61ed2a1
-      size: 6184084
+      md5: ff539693c30dbe46af617638eb335620
+      size: 5878100
     - path: data/splitted/train.pt
       hash: md5
-      md5: 53ba685e8798f04119def44a28aa9a38
-      size: 6185944
+      md5: 3fabbdbf4cfbabe7f632dd07e56f43df
+      size: 5879960
     - path: src/eval.py
       hash: md5
       md5: 5e1bf4725b730b2d38aee8294c6e4033
@@ -87,6 +89,6 @@ stages:
     outs:
     - path: eval
       hash: md5
-      md5: 4527c688c5a07d0d91ba13e0d84447ee.dir
+      md5: ae3ebf8d9583ecdaf9cc2a01209ebe02.dir
       size: 79
       nfiles: 2

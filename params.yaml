@@ -3,10 +3,12 @@ general:
 
 prepare:
   mode: thinned # default thinned
-  fixed_size: 600,800 # Final size for all signatures (h,w)
+  fixed_size: 300,400 # Final size for all signatures (h,w)
 
 featurization:
   method: patterns_hist # hog lbp patterns_hist
+  patterns_hist:
+    w_size: 3
 
 split:
   train_samples_per_user: 18
