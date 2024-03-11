@@ -33,16 +33,21 @@ class PolinomCoefficientsHist:
         if np.max(img) == 255:
             img = img / 255
         indices = np.argwhere(np.apply_along_axis(lambda x: x == 1, axis=0, arr=img))
+        print(len(indices))
         window_array = [get_shifted_window(img, *coords, w_size) for coords in indices]
         f_vector = []
         for some_window in window_array:
             indices = np.argwhere(np.apply_along_axis(lambda x: x == 1, axis=0, arr=some_window))
             X, y = np.split(indices, 2, axis=1)
-            reg = LinearRegression(fit_intercept=False).fit(X, y)
-            f_vector.append(reg.coef_)
+            reg = LinearRegression().fit(X, y)
+            f_vector.append([reg.coef_[0][0], reg.intercept_[0]])
 
-        feature_v, bins = np.histogram(f_vector, density=True)
-        return feature_v
+        x, y = np.array_split(np.array(f_vector), 2, axis=1)
+        x = x.reshape(-1)
+        y = y.reshape(-1)
+        H, xedges, yedges = np.histogram2d(x, y, density=True)
+
+        return H
 
 
 
