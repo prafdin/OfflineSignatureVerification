@@ -33,7 +33,6 @@ class PolinomCoefficientsHist:
         if np.max(img) == 255:
             img = img / 255
         indices = np.argwhere(np.apply_along_axis(lambda x: x == 1, axis=0, arr=img))
-        print(len(indices))
         window_array = [get_shifted_window(img, *coords, w_size) for coords in indices]
         f_vector = []
         for some_window in window_array:
@@ -47,7 +46,7 @@ class PolinomCoefficientsHist:
         y = y.reshape(-1)
         H, xedges, yedges = np.histogram2d(x, y, density=True)
 
-        return H
+        return np.ravel(H)
 
 
 
