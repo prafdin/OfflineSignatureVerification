@@ -38,7 +38,7 @@ stages:
         featurization.patterns_hist:
           w_size: 6
         featurization.polinom_coefficients_hist:
-          w_size: 8
+          w_size: 6
     outs:
     - path: data/features/dataset.pkl
       hash: md5
