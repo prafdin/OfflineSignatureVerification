@@ -21,6 +21,8 @@ class ConfigurationMatrix:
         for axe_id in self.axis_idx:
             self.matrix_components.append(self.variants[axe_id])
 
+        self.matrix = np.array(np.meshgrid(*[list(range(len(matrix_component))) for matrix_component in self.matrix_components], indexing='ij'))
+
         self.excludes = []
         for exclude in excludes:
             exclude_by_idx = {}
@@ -34,40 +36,38 @@ class ConfigurationMatrix:
                     exclude_idx.append(list(range(len(self.matrix_components[axe_idx]))))
             self.excludes.extend(list(product(*exclude_idx)))
 
-        self.matrix = np.array(np.meshgrid(*[list(range(len(matrix_component))) for matrix_component in self.matrix_components], indexing='ij'))
-
-
-
-    def print(self):
-        dimension, *length_per_dimension = self.matrix.shape
-        indexes_for_all_elements = product(*[list(range(length)) for length in length_per_dimension])
-        for idx in indexes_for_all_elements:
-            print(self.get_element(idx))
-
-
-    def get_element(self, idx):
+    def get_configuration(self, idx):
         return [self.matrix_components[m][self.matrix[m][idx]] for m in self.axis_idx]
 
+    def get_all_configuration(self):
+        dimension, *length_per_dimension = self.matrix.shape
+        indexes_for_all_elements = product(*[list(range(length)) for length in length_per_dimension])
+        return [self.get_configuration(idx) for idx in indexes_for_all_elements]
 
-    @staticmethod
-    def get_configuration_matrix(configuration):
-        axis = configuration['axis']
-        variants = configuration['variants']
-        excludes =  configuration['excludes']
-        return ConfigurationMatrix(axis, variants, excludes)
+    def get_all_configuration_except_excludes(self):
+        dimension, *length_per_dimension = self.matrix.shape
+        indexes_for_all_elements = product(*[list(range(length)) for length in length_per_dimension])
+        indexes_for_all_elements = [idx for idx in indexes_for_all_elements if idx not in self.excludes]
+        return [self.get_configuration(idx) for idx in indexes_for_all_elements]
+
+    def print_all(self):
+        for configuration in self.get_all_configuration_except_excludes():
+            print(configuration)
 
 
 def read_test(test):
     test_name = list(test.keys())[0]
-    configuration_matrix = ConfigurationMatrix.get_configuration_matrix(test[test_name])
-
-    configuration_matrix.print()
+    configuration = test[test_name]
+    configuration_matrix = ConfigurationMatrix(
+        configuration['axis'],
+        configuration['variants'],
+        configuration['excludes']
+    )
 
 
 if __name__ == '__main__':
     with open("tests.yaml") as f:
         y = yaml.safe_load(f)
-
 
     first_test = y['tests'][0]
     read_test(first_test)
