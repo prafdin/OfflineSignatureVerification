@@ -2,56 +2,90 @@ from itertools import product
 
 import numpy as np
 import yaml
+from abc import ABC, abstractmethod
 
-class ConfigurationMatrix:
-    def __init__(self, axis, variants, excludes):
-        self.axis_idx = list(range(len(axis)))
-        self.axis_names = axis
+class ConfigurationMatrixInterface(ABC):
+    @abstractmethod
+    def get_configuration(self, idx):
+        pass
+    @abstractmethod
+    def get_shape(self):
+        pass
+    @abstractmethod
+    def axis_components(self, axis_name):
+        pass
 
-        self.variants = {}
+class ConfigurationMatrix(ConfigurationMatrixInterface):
+    def __init__(self, axis, variants):
+        self._axis_idx = list(range(len(axis)))
+        self._axis_names = axis
+
+        variants_by_idx = {}
         for variant in variants:
             axe_name = list(variant.keys())[0]
-            if axe_name not in self.axis_names:
+            if axe_name not in self._axis_names:
                 print(f"[WARNING] There is not '{axe_name}' axe in axis list")
                 continue
-            axe_id = self.axis_names.index(axe_name)
-            self.variants[axe_id] = variant[axe_name]
+            axe_id = self._axis_names.index(axe_name)
+            variants_by_idx[axe_id] = variant[axe_name]
 
-        self.matrix_components = []
-        for axe_id in self.axis_idx:
-            self.matrix_components.append(self.variants[axe_id])
+        self._matrix_components = []
+        for axe_id in self._axis_idx:
+            self._matrix_components.append(variants_by_idx[axe_id])
 
-        self.matrix = np.array(np.meshgrid(*[list(range(len(matrix_component))) for matrix_component in self.matrix_components], indexing='ij'))
-
-        self.excludes = []
-        for exclude in excludes:
-            exclude_by_idx = {}
-            for k in exclude.keys():
-                exclude_by_idx[self.axis_names.index(k)] = exclude[k]
-            exclude_idx = []
-            for axe_idx in self.axis_idx:
-                if axe_idx in exclude_by_idx:
-                    exclude_idx.append([i for i, val in enumerate(self.matrix_components[axe_idx]) if val in exclude_by_idx[axe_idx]])
-                else:
-                    exclude_idx.append(list(range(len(self.matrix_components[axe_idx]))))
-            self.excludes.extend(list(product(*exclude_idx)))
+        self._matrix = np.array(
+            np.meshgrid(*[list(range(len(matrix_component))) for matrix_component in self._matrix_components],
+                        indexing='ij')
+        )
+        self._shape = self._matrix.shape[1:]
 
     def get_configuration(self, idx):
-        return [self.matrix_components[m][self.matrix[m][idx]] for m in self.axis_idx]
+        return [self._matrix_components[m][self._matrix[m][idx]] for m in self._axis_idx]
 
-    def get_all_configuration(self):
-        dimension, *length_per_dimension = self.matrix.shape
+    def axis_components(self, axis_name):
+        return self._matrix_components[self._axis_names.index(axis_name)]
+
+    def get_shape(self):
+        return self._shape
+
+class ConfigurationMatrixWithExcludes(ConfigurationMatrixInterface):
+    def __init__(self, configuration_matrix: ConfigurationMatrixInterface, axes, excludes):
+        self._configuration_matrix = configuration_matrix
+        self._axis_names = axes
+
+        self._excludes = []
+        for exclude in excludes:
+            exclude_idx = []
+            for axis_name in self._axis_names:
+                if axis_name in exclude:
+                    exclude_idx.append(
+                        [i for i, val in enumerate(self._configuration_matrix.axis_components(axis_name)) if val in exclude[axis_name]])
+                else:
+                    exclude_idx.append(list(range(len(self._configuration_matrix.axis_components(axis_name)))))
+            self._excludes.extend(list(product(*exclude_idx)))
+
+    def get_configuration(self, idx):
+        if idx in self._excludes:
+            return None
+        return self._configuration_matrix.get_configuration(idx)
+
+    def axis_components(self, axis_name):
+        return self._configuration_matrix.axis_components(axis_name)
+
+    def get_shape(self):
+        return self._configuration_matrix.get_shape()
+
+class PrintableConfigurationMatrix:
+    def __init__(self, configuration_matrix: ConfigurationMatrixInterface):
+        self.configuration_matrix = configuration_matrix
+
+    def _get_all_configuration(self):
+        length_per_dimension = self.configuration_matrix.get_shape()
         indexes_for_all_elements = product(*[list(range(length)) for length in length_per_dimension])
-        return [self.get_configuration(idx) for idx in indexes_for_all_elements]
+        return [self.configuration_matrix.get_configuration(idx) for idx in indexes_for_all_elements]
 
-    def get_all_configuration_except_excludes(self):
-        dimension, *length_per_dimension = self.matrix.shape
-        indexes_for_all_elements = product(*[list(range(length)) for length in length_per_dimension])
-        indexes_for_all_elements = [idx for idx in indexes_for_all_elements if idx not in self.excludes]
-        return [self.get_configuration(idx) for idx in indexes_for_all_elements]
-
-    def print_all(self):
-        for configuration in self.get_all_configuration_except_excludes():
+    def print(self):
+        for configuration in self._get_all_configuration():
             print(configuration)
 
 
@@ -60,9 +94,12 @@ def read_test(test):
     configuration = test[test_name]
     configuration_matrix = ConfigurationMatrix(
         configuration['axis'],
-        configuration['variants'],
-        configuration['excludes']
+        configuration['variants']
     )
+    configuration_matrix = ConfigurationMatrixWithExcludes(configuration_matrix, configuration['axis'], configuration['excludes'])
+
+    printable_configuration_matrix = PrintableConfigurationMatrix(configuration_matrix)
+    printable_configuration_matrix.print()
 
 
 if __name__ == '__main__':
