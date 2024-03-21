@@ -41,8 +41,3 @@ stages:
     - eval.knn
     outs:
     - eval
-metrics:
-- eval/metrics.json
-plots:
-- eval/plots/metrics:
-    x: step

@@ -68,7 +68,7 @@ def main():
     X = np.asarray(X)
     y = np.asarray(y)
 
-    with Live("eval", save_dvc_exp=True) as live:
+    with Live("eval", dvcyaml=False) as live:
         eval(classifier, X, y, "test", live)
 
 
