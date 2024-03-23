@@ -34,23 +34,23 @@ stages:
       size: 2258
     params:
       params.yaml:
-        featurization.method: polinom_coefficients_hist
+        featurization.method: hog
         featurization.patterns_hist:
           w_size: 6
         featurization.polinom_coefficients_hist:
-          w_size: 12
+          w_size: 6
     outs:
     - path: data/features/dataset.pkl
       hash: md5
-      md5: 1cc8b2941d04c530fe1f934614771c69
-      size: 149982
+      md5: f270c6246fc878dd4dad81c50f3b9f94
+      size: 38065644
   split:
     cmd: python src/split.py data/features/dataset.pkl data/splitted/train.pt data/splitted/test.pt
     deps:
     - path: data/features/dataset.pkl
       hash: md5
-      md5: 1cc8b2941d04c530fe1f934614771c69
-      size: 149982
+      md5: f270c6246fc878dd4dad81c50f3b9f94
+      size: 38065644
     - path: src/split.py
       hash: md5
       md5: 31d9ac88352258ad88a28e6590562489
@@ -61,23 +61,23 @@ stages:
     outs:
     - path: data/splitted/test.pt
       hash: md5
-      md5: 1cc1adca849f61c9378a80d5fa9fd7b9
-      size: 265428
+      md5: 7f761966a14e9dc10d7f1878ddf2a3de
+      size: 42601428
     - path: data/splitted/train.pt
       hash: md5
-      md5: de95cc5989489620ecc4cd321e780ce6
-      size: 267288
+      md5: 3fe10452e1e7980ea6a9c510faee15c4
+      size: 42603288
   eval:
     cmd: python src/eval.py data/splitted/train.pt data/splitted/test.pt
     deps:
     - path: data/splitted/test.pt
       hash: md5
-      md5: 1cc1adca849f61c9378a80d5fa9fd7b9
-      size: 265428
+      md5: 7f761966a14e9dc10d7f1878ddf2a3de
+      size: 42601428
     - path: data/splitted/train.pt
       hash: md5
-      md5: de95cc5989489620ecc4cd321e780ce6
-      size: 267288
+      md5: 3fe10452e1e7980ea6a9c510faee15c4
+      size: 42603288
     - path: src/eval.py
       hash: md5
       md5: 5e1bf4725b730b2d38aee8294c6e4033
@@ -91,6 +91,6 @@ stages:
     outs:
     - path: eval
       hash: md5
-      md5: 2d426e146f58579147445f25cfd002aa.dir
-      size: 81
+      md5: fc948a60d999f2e12617cea6d95936eb.dir
+      size: 77
       nfiles: 2
