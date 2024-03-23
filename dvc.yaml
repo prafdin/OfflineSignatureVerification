@@ -8,7 +8,8 @@ stages:
     - prepare.mode
     - prepare.fixed_size
     outs:
-    - data/prepared/dataset.pkl
+    - data/prepared/dataset.pkl:
+        cache: false
   featurize:
     cmd: python src/featurize.py data/prepared/dataset.pkl data/features/dataset.pkl
     deps:
@@ -19,7 +20,8 @@ stages:
     - featurization.patterns_hist
     - featurization.polinom_coefficients_hist
     outs:
-    - data/features/dataset.pkl
+    - data/features/dataset.pkl:
+        cache: false
   split:
     cmd: python src/split.py data/features/dataset.pkl data/splitted/train.pt data/splitted/test.pt
     deps:
@@ -28,8 +30,10 @@ stages:
     params:
     - split.salt
     outs:
-    - data/splitted/train.pt
-    - data/splitted/test.pt
+    - data/splitted/train.pt:
+        cache: false
+    - data/splitted/test.pt:
+        cache: false
   eval:
     cmd: python src/eval.py data/splitted/train.pt data/splitted/test.pt
     deps:
@@ -39,6 +43,9 @@ stages:
     params:
     - eval.use_cls
     - eval.knn
+    outs:
+      - eval:
+          cache: false
 metrics:
 - eval/metrics.json
 plots:
