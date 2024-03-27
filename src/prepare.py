@@ -4,18 +4,18 @@ import sys
 import numpy as np
 import pandas as pd
 import yaml
-from skimage.morphology import skeletonize
 from torch.utils.data import DataLoader
 from torchvision import transforms
 
 from custom_datasets import OriginalSignsCedarDataset
 from image_processor.image_processor import ImageProcessor
+from image_processor import image_processor
 
 
+def is_dryrun():
+    return True
 
-def prepare_images(transform, cedar_dataset_root_dir, output_path):
-    original_dataset = OriginalSignsCedarDataset(cedar_dataset_root_dir, transform)
-
+def prepare_images(original_dataset, output_path):
     dataloader = DataLoader(original_dataset, batch_size=32, num_workers=2)
     dataframes = []
     for i in dataloader:
@@ -28,11 +28,12 @@ def prepare_images(transform, cedar_dataset_root_dir, output_path):
 
 
 def main():
-    if len(sys.argv) != 3:
+    if not (2 < len(sys.argv) < 5):
         sys.stderr.write("Arguments error. Usage:\n")
-        sys.stderr.write("python prepare.py cedar_dataset_root_dir output_path\n")
+        sys.stderr.write("python prepare.py cedar_dataset_root_dir output_path --dry-run=NUM\n")
         sys.stderr.write("Where: 'cedar_dataset_root_dir' path to CEDAR dataset dir\n")
-        sys.stderr.write("and 'output_path' path to result pickle file\n")
+        sys.stderr.write("'output_path' path to result pickle file\n")
+        sys.stderr.write("'--dry-run=NUM' flag for run script in dry-run mode, NUM is id of image from dataset. Optional.\n")
         sys.exit(1)
 
     prepare_params = yaml.safe_load(open("params.yaml"))["prepare"]
@@ -71,7 +72,17 @@ def main():
         sys.stderr.write("Not recognized mode option\n")
         sys.exit(1)
 
-    prepare_images(transform, cedar_dataset_root_dir, output_path)
+    original_dataset = OriginalSignsCedarDataset(cedar_dataset_root_dir, transform)
+
+    if len(sys.argv) > 3 and "--dry-run" in sys.argv[3]:
+        id = int(sys.argv[3].split("=")[1])
+        os.environ["DEBUG"] = "true"
+        image, _ = original_dataset[id]
+        sys.stdout.write(f"Script successfully executed in dry-run mode\n")
+        sys.stdout.write(f"Output dir: {image_processor.DEBUG_OUTPUT_DIR}\n")
+        exit(0)
+    else:
+        prepare_images(original_dataset, output_path)
 
 
 if __name__ == '__main__':
