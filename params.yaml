@@ -6,7 +6,7 @@ prepare:
   fixed_size: 300,400 # Final size for all signatures (h,w)
 
 featurization:
-  method: polinom_coefficients_hist # hog lbp patterns_hist polinom_coefficients_hist
+  method: hog # hog lbp patterns_hist polinom_coefficients_hist
   patterns_hist:
     w_size: 6
   polinom_coefficients_hist:
