@@ -12,9 +12,6 @@ from image_processor.image_processor import ImageProcessor
 from image_processor import image_processor
 
 
-def is_dryrun():
-    return True
-
 def prepare_images(original_dataset, output_path):
     dataloader = DataLoader(original_dataset, batch_size=32, num_workers=2)
     dataframes = []
