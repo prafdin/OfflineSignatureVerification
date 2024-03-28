@@ -85,20 +85,21 @@ class ImageProcessor:
         if is_debug():
             save_img(
                 Path(DEBUG_OUTPUT_DIR).joinpath(f"{datetime.datetime.now().strftime(TIMESTAMP_STRF)}_thin_img.png"),
-                thinned)
+                thinned
+            )
         return thinned
 
     @staticmethod
     def morph_open(image: Image) -> Image:
         kernel = cv.getStructuringElement(cv.MORPH_RECT, (2, 2))
-        img = np.array(image).astype(np.uint8)
-        img = cv.morphologyEx(np.array(image).astype(np.uint8), cv.MORPH_OPEN, kernel)
-        img = PIL.Image.fromarray(img.astype(np.uint8) * 255, "L")
+        image = np.array(image).astype(np.uint8)
+        image = cv.morphologyEx(np.array(image).astype(np.uint8), cv.MORPH_OPEN, kernel)
+        image = PIL.Image.fromarray(image, "L")
         if is_debug():
             save_img(
                 Path(DEBUG_OUTPUT_DIR).joinpath(f"{datetime.datetime.now().strftime(TIMESTAMP_STRF)}_morph_open.png"),
-                img)
-        return img
+                image)
+        return image
 
     @staticmethod
     def dilate_img(image: Image) -> Image:
