@@ -49,7 +49,7 @@ class ImageProcessor:
     @staticmethod
     def thin_img(image: Image) -> Image:
         image = image.convert("1")
-        thinned = skimage.morphology.skeletonize(image, method="zhang")
+        thinned = skimage.morphology.skeletonize(np.array(image, dtype=np.uint8), method="zhang")
         return PIL.Image.fromarray(thinned.astype(np.uint8) * 255, "L")
 
     @staticmethod
