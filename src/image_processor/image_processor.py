@@ -49,10 +49,6 @@ class ImageProcessor:
     @staticmethod
     def thin_img(image: Image) -> Image:
         image = image.convert("1")
-        image = np.array(image, dtype=np.uint8)
-        if np.count_nonzero(image) > np.count_nonzero(image == 0):
-            image = image ^ 1
-
         thinned = skimage.morphology.skeletonize(image, method="zhang")
         return PIL.Image.fromarray(thinned.astype(np.uint8) * 255, "L")
 
