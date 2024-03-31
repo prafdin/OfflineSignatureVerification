@@ -1,5 +1,7 @@
 import numpy as np
 from sklearn.linear_model import LinearRegression
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import PolynomialFeatures
 
 _configs = {
     "w_size": 3
@@ -30,6 +32,7 @@ class PolinomCoefficientsHist:
     def __call__(self, *args, **kwargs):
         img = args[0]
         w_size = self.configs["w_size"]
+        bins = list(map(int, self.configs["bins"].split(",")))
         if np.max(img) == 255:
             img = img / 255
         indices = np.argwhere(np.apply_along_axis(lambda x: x == 1, axis=0, arr=img))
@@ -38,11 +41,18 @@ class PolinomCoefficientsHist:
         for some_window in window_array:
             indices = np.argwhere(np.apply_along_axis(lambda x: x == 1, axis=0, arr=some_window))
             X, y = np.split(indices, 2, axis=1)
-            reg = LinearRegression(fit_intercept=False).fit(X, y)
-            f_vector.append(reg.coef_)
+            reg = make_pipeline(
+                PolynomialFeatures(1),
+                LinearRegression(fit_intercept=False)
+            ).fit(X, y)
+            f_vector.append([*reg.steps[-1][1].coef_[0]])
 
-        feature_v, bins = np.histogram(f_vector, density=True)
-        return feature_v
+        x, y = np.array_split(np.array(f_vector), 2, axis=1)
+        x = x.reshape(-1)
+        y = y.reshape(-1)
+        H, xedges, yedges = np.histogram2d(x, y, bins=bins, density=True)
+
+        return np.ravel(H)
 
 
 
