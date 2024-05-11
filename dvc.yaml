@@ -40,7 +40,7 @@ stages:
     - eval.use_cls
     - eval.knn
     outs:
-      - eval
+    - eval
 metrics:
 - eval/metrics.json
 plots:
