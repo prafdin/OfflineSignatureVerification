@@ -33,10 +33,9 @@ class PolinomCoefficientsHist:
         img = args[0]
         w_size = self.configs["w_size"]
         bins = list(map(int, self.configs["bins"].split(",")))
-        if np.max(img) == 255:
-            img = img / 255
-        indices = np.argwhere(np.apply_along_axis(lambda x: x == 1, axis=0, arr=img))
-        window_array = [get_shifted_window(img, *coords, w_size) for coords in indices]
+
+        window_array = create_2d_square_rolling_window(img, w_size).reshape((-1, w_size, w_size))
+        window_array = [w for w in window_array if w.any()]
         f_vector = []
         for some_window in window_array:
             indices = np.argwhere(np.apply_along_axis(lambda x: x == 1, axis=0, arr=some_window))
@@ -56,3 +55,27 @@ class PolinomCoefficientsHist:
 
 
 
+# https://habr.com/ru/articles/489734/#2d
+def rolling_window_2d(a, window_shape, dx=3, dy=3):
+    if (len(window_shape) > 2):
+        raise Exception("Function supports only 2d window")
+
+    shape = a.shape[:-2] + \
+            ((a.shape[-2] - window_shape[0]) // dy + 1,) + \
+            ((a.shape[-1] - window_shape[1]) // dx + 1,) + \
+            (window_shape[0], window_shape[1])  # sausage-like shape with 2D cross-section
+    strides = a.strides[:-2] + \
+              (a.strides[-2] * dy,) + \
+              (a.strides[-1] * dx,) + \
+              a.strides[-2:]
+    return np.lib.stride_tricks.as_strided(a, shape=shape, strides=strides)
+
+
+def create_2d_square_rolling_window(a, square_window_size):
+    if (a.shape[0] % square_window_size or a.shape[1] % square_window_size):
+        raise Exception("""\
+            Some elements of the matrix will not get into the rolling window. 
+            Expand the original matrix for the following conditions are met:
+            a.shape[0] % square_window_size == 0 and a.shape[1] % square_window_size == 0""".strip())
+
+    return rolling_window_2d(a, (square_window_size, square_window_size), square_window_size, square_window_size)
