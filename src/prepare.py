@@ -63,6 +63,11 @@ def main():
             ImageProcessor.thin_img,
             np.array
         ])
+    elif mode == "as_is":
+        transform = transforms.Compose([
+            transforms.Resize(fixed_size),
+            np.array
+        ])
     else:
         sys.stderr.write("Not recognized mode option\n")
         sys.exit(1)
