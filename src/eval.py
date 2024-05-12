@@ -6,10 +6,14 @@ import numpy as np
 import torch
 import yaml
 import cv2 as cv
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import Perceptron
+from sklearn.multiclass import OneVsOneClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics.pairwise import distance_metrics
+from sklearn.tree import DecisionTreeClassifier
 from torch.utils.data import DataLoader
-from sklearn import metrics
+from sklearn import metrics, svm
 from dvclive import Live
 
 class Metric(Enum):
@@ -21,9 +25,13 @@ class Metric(Enum):
     KV_DIVERGENCE = lambda x, y: cv.compareHist(x.reshape(-1, 1).astype(np.float32), y.reshape(-1, 1).astype(np.float32), cv.HISTCMP_KL_DIV)
 
 
-def eval(model, X, y, split, live):
-    predictions_by_class = model.predict_proba(X)
-    avg_prec = metrics.average_precision_score(y, predictions_by_class)
+def eval(model, X, y, live):
+    # try:
+    #     predictions_by_class = model.predict_proba(X)
+    #     avg_prec = metrics.average_precision_score(y, predictions_by_class)
+    # except AttributeError:
+    y_predict = model.predict(X)
+    avg_prec = metrics.accuracy_score(y, y_predict)
     live.log_metric("avg_prec", avg_prec)
 
 
@@ -46,6 +54,14 @@ def main():
         k = eval_params["knn"]["k"]
         metric = eval_params["knn"]["metric"]
         classifier = KNeighborsClassifier(n_neighbors=k, metric=Metric.__dict__[metric])
+    elif use_classifier == "svm":
+        classifier = svm.SVC(decision_function_shape='ovo', probability=True)
+    elif use_classifier == "perceptron":
+        classifier = OneVsOneClassifier(Perceptron())
+    elif use_classifier == "decision_tree":
+        classifier = DecisionTreeClassifier()
+    elif use_classifier == "random_forest":
+        classifier = RandomForestClassifier()
 
     X_train = []
     y_train = []
@@ -69,7 +85,7 @@ def main():
     y = np.asarray(y)
 
     with Live("eval", save_dvc_exp=True) as live:
-        eval(classifier, X, y, "test", live)
+        eval(classifier, X, y, live)
 
 
 if __name__ == '__main__':

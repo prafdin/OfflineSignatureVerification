@@ -19,7 +19,7 @@ split:
   salt: 44
 
 eval:
-  use_cls: knn
+  use_cls: perceptron # knn svm decision_tree random_forest
   knn:
     k: 6
     metric: BHATTACHARYYA # EUCLIDEAN CITYBLOCK MANHATTAN BHATTACHARYYA CORRELATION KV_DIVERGENCE
