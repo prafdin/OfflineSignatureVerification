@@ -19,7 +19,7 @@ from feature_extraction.polinom_coefficients_hist import PolinomCoefficientsHist
 
 def featurize(transform, dataset_path, output_path):
     prepared_dataset = PreparedDataset(dataset_path, transform)
-    dataloader = DataLoader(prepared_dataset, batch_size=32, num_workers=2)
+    dataloader = DataLoader(prepared_dataset, batch_size=1)
     dataframes = []
     for i in dataloader:
         df = pd.DataFrame(zip(np.asarray(i[0]), np.asarray(i[1])), columns=['feature', 'class'])
