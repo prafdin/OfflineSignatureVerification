@@ -38,7 +38,7 @@ class PolinomCoefficientsHist:
         window_array = [w for w in window_array if w.any()]
         f_vector = []
         for some_window in window_array:
-            indices = np.argwhere(np.apply_along_axis(lambda x: x == 1, axis=0, arr=some_window))
+            indices = np.argwhere(np.apply_along_axis(lambda x: x == 255, axis=0, arr=some_window))
             X, y = np.split(indices, 2, axis=1)
             reg = make_pipeline(
                 PolynomialFeatures(1),
