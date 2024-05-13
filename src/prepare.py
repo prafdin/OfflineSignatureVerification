@@ -8,6 +8,7 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 
 from custom_datasets import OriginalSignsCedarDataset
+from custom_datasets.bhsig_dataset import OriginalSignsBHSigDataset
 from image_processor.image_processor import ImageProcessor
 from image_processor import image_processor
 
@@ -72,7 +73,10 @@ def main():
         sys.stderr.write("Not recognized mode option\n")
         sys.exit(1)
 
-    original_dataset = OriginalSignsCedarDataset(cedar_dataset_root_dir, transform)
+    if "CEDAR" in cedar_dataset_root_dir:
+        original_dataset = OriginalSignsCedarDataset(cedar_dataset_root_dir, transform)
+    else:
+        original_dataset = OriginalSignsBHSigDataset(cedar_dataset_root_dir, transform)
 
     if len(sys.argv) > 3 and "--dry-run" in sys.argv[3]:
         id = int(sys.argv[3].split("=")[1])

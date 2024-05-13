@@ -8,7 +8,7 @@ import yaml
 import cv2 as cv
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import Perceptron
-from sklearn.multiclass import OneVsOneClassifier
+from sklearn.multiclass import OneVsOneClassifier, OneVsRestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics.pairwise import distance_metrics
 from sklearn.tree import DecisionTreeClassifier
@@ -57,7 +57,7 @@ def main():
     elif use_classifier == "svm":
         classifier = svm.SVC(decision_function_shape='ovo', probability=True)
     elif use_classifier == "perceptron":
-        classifier = OneVsOneClassifier(Perceptron())
+        classifier = OneVsRestClassifier(Perceptron())
     elif use_classifier == "decision_tree":
         classifier = DecisionTreeClassifier()
     elif use_classifier == "random_forest":
