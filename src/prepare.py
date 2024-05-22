@@ -45,12 +45,11 @@ def main():
         transform = transforms.Compose([
             ImageProcessor.img_to_gray,
             ImageProcessor.img_to_bin,
+            ImageProcessor.morph_open,
+            ImageProcessor.dilate_img,
             ImageProcessor.fix_slope,
             ImageProcessor.crop_roi,
             transforms.Resize(fixed_size),
-            ImageProcessor.img_to_gray,
-            ImageProcessor.morph_open,
-            ImageProcessor.dilate_img,
             ImageProcessor.erode_img,
             np.array
         ])
@@ -58,12 +57,12 @@ def main():
         transform = transforms.Compose([
             ImageProcessor.img_to_gray,
             ImageProcessor.img_to_bin,
-            ImageProcessor.fix_slope,
-            ImageProcessor.crop_roi,
-            transforms.Resize(fixed_size),
             ImageProcessor.morph_open,
             ImageProcessor.dilate_img,
             ImageProcessor.erode_img,
+            ImageProcessor.fix_slope,
+            ImageProcessor.crop_roi,
+            transforms.Resize(fixed_size),
             ImageProcessor.thin_img,
             np.array
         ])

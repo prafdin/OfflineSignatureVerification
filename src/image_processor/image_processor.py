@@ -92,9 +92,8 @@ class ImageProcessor:
     @staticmethod
     def morph_open(image: Image) -> Image:
         kernel = cv.getStructuringElement(cv.MORPH_RECT, (2, 2))
-        image = np.array(image).astype(np.uint8)
         image = cv.morphologyEx(np.array(image).astype(np.uint8), cv.MORPH_OPEN, kernel)
-        image = PIL.Image.fromarray(image, "L")
+        image = PIL.Image.fromarray(image.astype(bool))
         if is_debug():
             save_img(
                 Path(DEBUG_OUTPUT_DIR).joinpath(f"{datetime.datetime.now().strftime(TIMESTAMP_STRF)}_morph_open.png"),
@@ -104,11 +103,9 @@ class ImageProcessor:
     @staticmethod
     def dilate_img(image: Image) -> Image:
         kernel = cv.getStructuringElement(cv.MORPH_RECT, (2, 2))
-        img = np.array(image).astype(np.uint8)
-
         dilate_iterations = 1
-        img = cv.dilate(img, kernel, iterations=dilate_iterations)
-        img = PIL.Image.fromarray(img.astype(np.uint8)).convert("L")
+        img = cv.dilate(np.array(image).astype(np.uint8), kernel, iterations=dilate_iterations)
+        img = PIL.Image.fromarray(img.astype(bool))
         if is_debug():
             save_img(
                 Path(DEBUG_OUTPUT_DIR).joinpath(f"{datetime.datetime.now().strftime(TIMESTAMP_STRF)}_dilate_img.png"),
@@ -118,11 +115,10 @@ class ImageProcessor:
     @staticmethod
     def erode_img(image: Image) -> Image:
         kernel = cv.getStructuringElement(cv.MORPH_RECT, (2, 2))
-        img = np.array(image).astype(np.uint8)
 
         erode_iterations = 1
-        img = cv.erode(img, kernel, iterations=erode_iterations)
-        img = PIL.Image.fromarray(img.astype(np.uint8)).convert("L")
+        img = cv.erode(np.array(image).astype(np.uint8), kernel, iterations=erode_iterations)
+        img = PIL.Image.fromarray(img.astype(bool))
         if is_debug():
             save_img(
                 Path(DEBUG_OUTPUT_DIR).joinpath(f"{datetime.datetime.now().strftime(TIMESTAMP_STRF)}_erode_img.png"),
@@ -141,19 +137,11 @@ class ImageProcessor:
 
     @staticmethod
     def crop_roi(image: Image) -> Image:
-        orig_image = image.copy()
         if image.mode != "1":
-            image = ImageProcessor.img_to_gray(image)
-            image = ImageProcessor.img_to_bin(image)
+            raise RuntimeError("Image in binary mode is expected for crop_roi func")
 
-        image = np.array(image.convert('L'))
-
-        kernel = np.ones((15, 15), np.uint8)
-        image = cv.morphologyEx(image, cv.MORPH_CLOSE, kernel)
-        image = cv.morphologyEx(image, cv.MORPH_DILATE, kernel)
-
-        cnts = cv.findContours(image, cv.RETR_LIST,
-                               cv.CHAIN_APPROX_SIMPLE)[-2]
+        image = np.array(image).astype(np.uint8)
+        cnts = cv.findContours(image, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)[-2]
 
         nh, nw = image.shape[:2]
         min_x, min_y, max_x, max_y = 999999999, 999999999, -1, -1
@@ -169,7 +157,7 @@ class ImageProcessor:
                 if y + h > max_y:
                     max_y = y + h
 
-        cropped_img = orig_image.crop((min_x, min_y, max_x, max_y))
+        cropped_img = PIL.Image.fromarray(image.astype(bool)).crop((min_x, min_y, max_x, max_y))
         if is_debug():
             save_img(
                 Path(DEBUG_OUTPUT_DIR).joinpath(f"{datetime.datetime.now().strftime(TIMESTAMP_STRF)}_crop_roi.png"),
@@ -182,7 +170,7 @@ class ImageProcessor:
         Expect image in binary mode.
         """
         if image.mode != "1":
-            raise RuntimeError("Image in grayscale mode is expected for fix_slope func")
+            raise RuntimeError("Image in binary mode is expected for fix_slope func")
         image = np.array(image).astype(int)
         image = np.rot90(image, 3)
 
