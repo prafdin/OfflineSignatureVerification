@@ -25,7 +25,7 @@ DefaultImageProcessorSettings = ImageProcessorSettings()
 
 
 def calc_img_cog(image):
-    M = cv.moments(image)
+    M = cv.moments(image, binaryImage=True)
     cx = int(M['m10'] / M['m00'])
     cy = int(M['m01'] / M['m00'])
     return cx, cy
@@ -178,20 +178,22 @@ class ImageProcessor:
 
     @staticmethod
     def fix_slope(image: Image) -> Image:
-        image = image.convert('L')
-        image = ImageProcessor.img_to_bin(image)
-        image = np.array(image.convert('L'))
+        """
+        Expect image in binary mode.
+        """
+        if image.mode != "1":
+            raise RuntimeError("Image in grayscale mode is expected for fix_slope func")
+        image = np.array(image).astype(int)
         image = np.rot90(image, 3)
 
-        indices = np.argwhere(np.apply_along_axis(lambda x: x == 255, axis=0, arr=image))
+        indices = np.argwhere(np.apply_along_axis(lambda x: x == 1, axis=0, arr=image))
         X, y = np.split(indices, 2, axis=1)
         reg = LinearRegression().fit(X, y)
         angle = np.degrees(np.arctan(reg.coef_[0][0])).astype(int)
         center = calc_img_cog(image)
         rotate_matrix = cv.getRotationMatrix2D(center=center, angle=-angle, scale=1)
-        rotated_image = cv.warpAffine(src=image, M=rotate_matrix, dsize=(image.shape[1], image.shape[0]),
-                                      borderValue=(0, 0, 0))
-        rotated_image = PIL.Image.fromarray(np.rot90(np.array(rotated_image / 255).astype(bool)))
+        rotated_image = cv.warpAffine(src=image.astype(float), M=rotate_matrix, dsize=(image.shape[1], image.shape[0]))
+        rotated_image = PIL.Image.fromarray(np.rot90(np.array(rotated_image).astype(bool)))
         if is_debug():
             save_img(
                 Path(DEBUG_OUTPUT_DIR).joinpath(f"{datetime.datetime.now().strftime(TIMESTAMP_STRF)}_fix_slope.png"),
